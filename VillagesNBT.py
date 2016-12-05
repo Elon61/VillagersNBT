@@ -74,4 +74,4 @@ village_list.append(create_village(77))
 doors_list = village_list[0]['Doors']
 doors_list.append(create_door(77, 88, 99, 11))
 cat.write_file("C:\Users\Elon\Downloads\cat.dat")
-#Add a thing that makes it that when adding a ddoor it will check for any door with the same coordinates in any village and remove it from any village that isnt from the ones created
+#TODO Add a thing that makes it that when adding a ddoor it will check for any door with the same coordinates in any village and remove it from any village that isnt from the ones created
