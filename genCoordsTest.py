@@ -1,7 +1,7 @@
 def testnameplsreplace(x1, x2, y, z1, z2):
     """
     make a MCEDIT filter to do the same thing could be cool,
-    like a filter to create a village on every selected door.
+    like a filter to create a village on every selected door, or on a X/Z axis of doors.
     """
     k = []
     if x1 > x2:
