@@ -12,7 +12,7 @@ def testnameplsreplace(x1, x2, y, z1, z2):
         for z in xrange(z1, z2 + 1):
             #k.append([x, y, z])
             k.extend([[x, y, z]])
-    k.append("end")
+    #k.append("end")
     #k.pop()
     return k
 

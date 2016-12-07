@@ -1,11 +1,15 @@
 from nbt import nbt
 class banana(object):
     id = 10
-cat = nbt.NBTFile(r"C:\Users\Elon\coding\PyCharm_Project\villages.dat", "rb")
-cat2 = cat['data']
-cat2.clear()
+tick = 77
+
+cat = nbt.NBTFile()
+cat2 = cat['data'] = nbt.TAG_Compound() # Tis workz like, a = b = c, like a and b are = to c, my guess is that C is a tag,
+# like tag number 99, and that A and B are kind of redirecting to it, like a shortcut thing.
+
 cat2['Villages'] = nbt.TAG_List(banana)
-cat2['Tick'] = nbt.TAG_Int(1)
+cat2['Tick'] = nbt.TAG_Int(tick)
+
 village_list = cat2['Villages']
 
 def create_village(tick):
@@ -36,6 +40,8 @@ def create_door(tick, x, y, z):
     door['Y'] = nbt.TAG_Int(y)
     door['Z'] = nbt.TAG_Int(z)
     return door
+#TODO i think i just need one more func adding doors to villager and calculating the aggregate and the center
+
 
 '''
 if True:
@@ -70,8 +76,8 @@ if True:
     new_door_dict['Y'] = nbt.TAG_Int(64)
     new_door_dict['Z'] = nbt.TAG_Int(4)
 '''
-village_list.append(create_village(77))
+village_list.append(create_village(tick))
 doors_list = village_list[0]['Doors']
 doors_list.append(create_door(77, 88, 99, 11))
-cat.write_file("C:\Users\Elon\Downloads\cat.dat")
+cat.write_file("./cat.dat")
 #TODO Add a thing that makes it that when adding a door it will check for any door with the same coordinates in any village and remove it from any village that isnt from the ones created
