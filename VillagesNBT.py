@@ -1,18 +1,43 @@
 from nbt import nbt
 class banana(object):
     id = 10
+
+number_of_villages_to_generate = 8
+number_of_doors_to_generate = 16
 tick = 77
 
 cat = nbt.NBTFile()
-cat2 = cat['data'] = nbt.TAG_Compound() # Tis workz like, a = b = c, like a and b are = to c, my guess is that C is a tag,
-# like tag number 99, and that A and B are kind of redirecting to it, like a shortcut thing.
+cat2 = cat['data'] = nbt.TAG_Compound()
 
 cat2['Villages'] = nbt.TAG_List(banana)
 cat2['Tick'] = nbt.TAG_Int(tick)
 
 village_list = cat2['Villages']
+class Village(object):
+    """
+    Village in minceraft
+    """
+    def __init__(self, tick):
+        self._village = create_village(tick)
+
+    def add_door(self, door):
+        doors_list = self._village['Doors']
+        doors_list.append(door)
+
+        self._village['ACX'] = nbt.TAG_Int(door['X'].value + self._village['ACX'].value)
+        self._village['ACY'] = nbt.TAG_Int(door['Y'].value + self._village['ACY'].value)
+        self._village['ACZ'] = nbt.TAG_Int(door['Z'].value + self._village['ACZ'].value)
+
+        self._village['CX'] = nbt.TAG_Int(self._village['ACX'].value / len(doors_list))
+        self._village['CY'] = nbt.TAG_Int(self._village['ACY'].value / len(doors_list))
+        self._village['CZ'] = nbt.TAG_Int(self._village['ACZ'].value / len(doors_list))
+
+    def get_vil(self):
+        return self._village
 
 def create_village(tick):
+    """
+    """
     village = nbt.TAG_Compound()
 
     village['Doors'] = nbt.TAG_List(banana)
@@ -40,8 +65,6 @@ def create_door(tick, x, y, z):
     door['Y'] = nbt.TAG_Int(y)
     door['Z'] = nbt.TAG_Int(z)
     return door
-#TODO i think i just need one more func adding doors to villager and calculating the aggregate and the center
-
 
 '''
 if True:
@@ -76,8 +99,17 @@ if True:
     new_door_dict['Y'] = nbt.TAG_Int(64)
     new_door_dict['Z'] = nbt.TAG_Int(4)
 '''
-village_list.append(create_village(tick))
-doors_list = village_list[0]['Doors']
-doors_list.append(create_door(77, 88, 99, 11))
+
+#village_list.append(create_village(tick))
+#doors_list = village_list[0]['Doors']
+#doors_list.append(create_door(77, 88, 99, 11))
+
+for i in xrange(number_of_villages_to_generate):
+    vil = Village(tick)
+    for l in xrange(number_of_doors_to_generate):
+        vil.add_door(create_door(tick, 1, 2, 4))
+    cat2['Villages'].append(vil.get_vil())
 cat.write_file("./cat.dat")
+
 #TODO Add a thing that makes it that when adding a door it will check for any door with the same coordinates in any village and remove it from any village that isnt from the ones created
+#TODO read the tick of the file and apply it to all the new villages

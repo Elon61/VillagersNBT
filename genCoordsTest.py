@@ -10,10 +10,7 @@ def testnameplsreplace(x1, x2, y, z1, z2):
         z1, z2 = z2, z1
     for x in xrange(x1, x2 + 1):
         for z in xrange(z1, z2 + 1):
-            #k.append([x, y, z])
-            k.extend([[x, y, z]])
-    #k.append("end")
-    #k.pop()
+            k.append([x, y, z])
     return k
 
-print testnameplsreplace(1, -10, 'Y', -1, 10)
+print testnameplsreplace(1, 3, 'Y', 2, 4)
