@@ -20,7 +20,7 @@ setup(
     long_description=long_description,
 
     # The project's main homepage.
-    url='minecraft.net',
+    url='https://github.com/Elon61/VillagersNBT/elonisapro',
 
     # Author details
     author='Elon61',
