@@ -1,0 +1,23 @@
+Metadata-Version: 1.1
+Name: elonisapro
+Version: 0.0.1
+Summary: A sample Python project
+Home-page: minecraft.net
+Author: Elon61
+Author-email: thisisnotavalidemail@gmail.com
+License: ProLicense
+Description: A sample Python project
+        =======================
+        
+        This is a useless thing that is useless in every possible way, shape or form.
+        ----
+        
+Keywords: Elon61
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: License :: OSI Approved :: ProLicense
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.6
+Classifier: Programming Language :: Python :: 2.7
