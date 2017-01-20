@@ -20,7 +20,7 @@ setup(
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/Elon61/VillagersNBT/elonisapro',
+    url='minecraft.net',
 
     # Author details
     author='Elon61',
@@ -52,7 +52,7 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='elon61',
+    keywords='Elon61',
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
