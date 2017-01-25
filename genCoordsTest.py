@@ -2,6 +2,9 @@
 from elonisapro.ImportFile import *
 
 def srange(x1, xDoors, spaces):
+    """
+    a counting thing that i dunno what does.
+    """
     for a in xrange(x1, x1 + xDoors):
         yield a
     for a in xrange(x1 + xDoors + spaces, x1 + spaces + xDoors * 2):
@@ -31,6 +34,6 @@ def testnameplsreplace(x1, villages, y, z1, halfDoorsInVillage, emptySpaces, axi
             k.append(j)
     return k
 
-pp = pprint.PrettyPrinter(indent=2)
-pp.pprint(testnameplsreplace(1, 32, 'Y', 1, 11, 18, 'Z'))
+#pp = pprint.PrettyPrinter(indent=2)
+#pp.pprint(testnameplsreplace(1, 32, 'Y', 1, 11, 18, 'Z'))
 #pp.pprint(testnameplsreplace(1, 11, 'Y', 1, 32, 18, 'X'))

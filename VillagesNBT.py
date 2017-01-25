@@ -1,26 +1,41 @@
 from nbt import nbt
-class banana(object):
+from genCoordsTest import testnameplsreplace
+class Banana(object):
     id = 10
 
-number_of_villages_to_generate = 8
-number_of_doors_to_generate = 16
+number_of_villages_to_generate = 32
+number_of_doors_to_generate = 22
 tick = 77
 
-cat = nbt.NBTFile()
-cat2 = cat['data'] = nbt.TAG_Compound()
+def template_village_file(tick):
+    """
+    Creates a template villages.dat file that i can modify later on
+    """
+    cat = nbt.NBTFile()
+    cat2 = cat['data'] = nbt.TAG_Compound()
+    cat2["Villages"] = nbt.TAG_List(Banana)
+    cat2['Tick'] = nbt.TAG_Int(tick)
+    return cat
 
-cat2['Villages'] = nbt.TAG_List(banana)
-cat2['Tick'] = nbt.TAG_Int(tick)
+def existing_village_file(kovetz):
+    """
+    Create an editable villages.nbt file from an already existing one, using the same tick value
+    """
+    cat77 = nbt.NBTFile(kovetz)
+    tick4 = cat77['data']['Tick'].value
+    return cat77, tick4
 
-village_list = cat2['Villages']
 class Village(object):
     """
-    Village in minceraft
+    Some villages.dat related functions
     """
     def __init__(self, tick):
         self._village = create_village(tick)
 
     def add_door(self, door):
+        """
+        Adds a door and updates the current village aggregate and center with some magic math stuff
+        """
         doors_list = self._village['Doors']
         doors_list.append(door)
 
@@ -35,13 +50,29 @@ class Village(object):
     def get_vil(self):
         return self._village
 
+def del_door(vil_list, x, y, z):
+    """
+    Searches for a door with specified coordinates inside of specified village list,
+    if the current village is out of doors, removes it.
+    Can be used just to do some cleanup.
+    """
+    for vil in vil_list:
+        vil2 = vil['Doors']
+        vil3 = list(vil['Doors'])
+        for door in vil3:
+            if (door['X'].value, door['Y'].value, door['Z'].value) == (x, y, z):
+                vil2.remove(door)
+        if len(vil2) == 0:
+            vil_list.remove(vil)
+
 def create_village(tick):
     """
+    Creates a template village
     """
     village = nbt.TAG_Compound()
 
-    village['Doors'] = nbt.TAG_List(banana)
-    village['Players'] = nbt.TAG_List(banana)
+    village['Doors'] = nbt.TAG_List(Banana)
+    village['Players'] = nbt.TAG_List(Banana)
     village['ACX'] = nbt.TAG_Int(0)
     village['ACY'] = nbt.TAG_Int(0)
     village['ACZ'] = nbt.TAG_Int(0)
@@ -59,6 +90,9 @@ def create_village(tick):
     return village
 
 def create_door(tick, x, y, z):
+    """
+    Generates a door using given coords and tick.
+    """
     door = nbt.TAG_Compound()
     door['TS'] = nbt.TAG_Int(tick)
     door['X'] = nbt.TAG_Int(x)
@@ -66,50 +100,37 @@ def create_door(tick, x, y, z):
     door['Z'] = nbt.TAG_Int(z)
     return door
 
-'''
-if True:
-    del village_list[:]
-    village_list.append(nbt.TAG_Compound())
-    current_V_dict = village_list[-1]
-    current_V_dict['Doors'] = nbt.TAG_List(banana)
-    current_V_dict['Players'] = nbt.TAG_List(banana)
-    current_V_dict['ACX'] = nbt.TAG_Int(0)
-    current_V_dict['ACY'] = nbt.TAG_Int(64)
-    current_V_dict['ACZ'] = nbt.TAG_Int(4)
+def village_gen(x1, villages, y, z1, halfDoorsInVillage, emptySpaces, axis, tick, cat):
+    """
+    generates villages with doors n stuff
 
-    current_V_dict['CX'] = nbt.TAG_Int(0)
-    current_V_dict['CY'] = nbt.TAG_Int(64)
-    current_V_dict['CZ'] = nbt.TAG_Int(4)
+    'x1' is the lowest block on the X axis
+    'z1' is the lowest block on the Z axis
+    'y'  is the Y level of the lower block of the doors
+    'axis' is the axis on which the villages are, either the axis where the in the village doors are,
+    or the axis where the villages are, as in if i was to walk down that axis i would go through a door of every village
 
-    current_V_dict['Golems'] = nbt.TAG_Int(0)
-    current_V_dict['MTick'] = nbt.TAG_Int(0)
-    current_V_dict['PopSize'] = nbt.TAG_Int(1)
-    current_V_dict['Radius'] = nbt.TAG_Int(32)
-    current_V_dict['Stable'] = nbt.TAG_Int(1)
-    current_V_dict['Tick'] = nbt.TAG_Int(1)
+    'villages' is the numbers of villages i want on this layer
+    'halfDoorsInVillage' is half of the doors in a village
+    'emptySpaces' is the space between the 2 blocks of doors /
+    the space between the first half of the doors and the second
+    'tick' the time in ticks, in a new file can be basicly anything but 0 and in an old file it has the be the same as
+    the other villages and the main tick of the file.
+    'cat' magic n rainbow ponies
 
+    """
+    cat2 = cat["data"]
+    doors_coords_list = testnameplsreplace(x1, villages, y, z1, halfDoorsInVillage, emptySpaces, axis)
+    for curr_vil in doors_coords_list:
+        vil = Village(tick)
+        for x, y, z in curr_vil:
+            del_door(cat2['Villages'], x, y, z)
+            vil.add_door(create_door(tick, x, y, z))
+        cat2['Villages'].append(vil.get_vil())
 
-    doors_list = current_V_dict['Doors']
-    del doors_list[:]
-    doors_list.append(nbt.TAG_Compound())
-    new_door_dict = doors_list[-1]
+cat1, tick = existing_village_file("./villages.dat")
+village_gen(-669, number_of_villages_to_generate, 76, -221, number_of_doors_to_generate / 2, 19, 'Z', tick, cat1)
+cat1.write_file("./villages.dat")
 
-    new_door_dict['TS'] = nbt.TAG_Int(1)
-    new_door_dict['X'] = nbt.TAG_Int(0)
-    new_door_dict['Y'] = nbt.TAG_Int(64)
-    new_door_dict['Z'] = nbt.TAG_Int(4)
-'''
-
-#village_list.append(create_village(tick))
-#doors_list = village_list[0]['Doors']
-#doors_list.append(create_door(77, 88, 99, 11))
-
-for i in xrange(number_of_villages_to_generate):
-    vil = Village(tick)
-    for l in xrange(number_of_doors_to_generate):
-        vil.add_door(create_door(tick, 1, 2, 4))
-    cat2['Villages'].append(vil.get_vil())
-cat.write_file("./cat.dat")
-
-#TODO Add a thing that makes it that when adding a door it will check for any door with the same coordinates in any village and remove it from any village that isnt from the ones created
-#TODO read the tick of the file and apply it to all the new villages
+#TODO make this stuff a bit cleaner.
+#TODO how about running it from cmd?
