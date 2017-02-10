@@ -11,7 +11,7 @@ def srange(x1, xDoors, spaces):
         yield a
 
 
-def testnameplsreplace(x1, villages, y, z1, halfDoorsInVillage, emptySpaces, axis):
+def village_doors_coordinates(x1, villages, y, z1, halfDoorsInVillage, emptySpaces, axis):
     """
     x1 and z1 are the lowest value on the X / Z axis
     'halfDoorsInVillage' is 1/2 of the total doors in a village
