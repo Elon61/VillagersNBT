@@ -200,5 +200,5 @@ def village_gen(x1, villages, y, z1, halfDoorsInVillage, emptySpaces, axis, tick
 
 
 cat1, tick = existing_village_file("./villages.dat")
-village_gen(-100, number_of_villages_to_generate, 252, -100, number_of_doors_to_generate / 2, 19, 'X', tick, cat1)
+village_gen(-107, number_of_villages_to_generate, 132, 169, number_of_doors_to_generate / 2, 19, 'X', tick, cat1)
 cat1.write_file("./villages.dat")

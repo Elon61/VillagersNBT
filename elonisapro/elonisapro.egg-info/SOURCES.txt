@@ -1,8 +1,0 @@
-README.rst
-setup.py
-elonisapro.egg-info/PKG-INFO
-elonisapro.egg-info/SOURCES.txt
-elonisapro.egg-info/dependency_links.txt
-elonisapro.egg-info/top_level.txt
-magic/ImportFile.py
-magic/__init__.py
