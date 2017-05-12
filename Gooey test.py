@@ -21,4 +21,4 @@ app.setGeom("1280x720")
 app.addButton("Button", button91)
 
 app.go()
-pass
+pas
