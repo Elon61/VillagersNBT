@@ -1,6 +1,5 @@
 from nbt import nbt
 from matplotlib import pyplot
-#PUSH EDIT
 
 class Banana(object):
     id = 10
