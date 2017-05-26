@@ -1,4 +1,7 @@
 from nbt import nbt
+from matplotlib import pyplot
+#PUSH EDIT
+
 class Banana(object):
     id = 10
 
@@ -17,7 +20,7 @@ def village_doors_coordinates(x1, villages, y, z1, halfDoorsInVillage, emptySpac
     """
     x1 and z1 are the lowest value on the X / Z axis
     'halfDoorsInVillage' is 1/2 of the total doors in a village
-    :param axis: The axis along a single village is created;
+    :param axis: The axis along which a single village is created;
 
     make a MCEDIT filter to do the same thing could be cool,
     like a filter to create a village on every selected door, or on a row of doors on the X/Z axis.
@@ -198,7 +201,10 @@ def village_gen(x1, villages, y, z1, halfDoorsInVillage, emptySpaces, axis, tick
         cat2['Villages'].append(vil.get_vil())
 
 
+def main():
+    cat1, tick = existing_village_file("./villages.dat")
+    village_gen(-107, number_of_villages_to_generate, 132, 169, number_of_doors_to_generate / 2, 19, 'X', tick, cat1)
+    cat1.write_file("./villages.dat")
 
-cat1, tick = existing_village_file("./villages.dat")
-village_gen(-107, number_of_villages_to_generate, 132, 169, number_of_doors_to_generate / 2, 19, 'X', tick, cat1)
-cat1.write_file("./villages.dat")
+if __name__ == '__main__':
+    main()
