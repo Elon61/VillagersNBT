@@ -59,7 +59,10 @@ def existing_village_file(kovetz):
     """
     Create an editable villages.nbt file from an already existing one, using the same tick value
     """
-    cat77 = nbt.NBTFile(kovetz)
+    try:
+        cat77 = nbt.NBTFile(kovetz)
+    except IOError:
+        raise Exception("Hmm. Unfortunately, the file requested does not exist :(")
     tick4 = cat77['data']['Tick'].value
     return cat77, tick4
 
