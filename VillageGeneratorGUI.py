@@ -7,6 +7,7 @@ import shutil
 import VillagesNBT
 import errno
 import glob
+import hotshot, hotshot.stats
 
 width = GetSystemMetrics(0)
 height = GetSystemMetrics(1)
@@ -19,6 +20,9 @@ SPACE_BETWEEN_DOORS = "Space between the 2 sets of doors:\t\t"
 X_LOW = "Low X coordinate:\t\t"
 Y = "Y coordinate:\t\t\t"
 Z_LOW = "Low Z coordinate:\t\t"
+
+bananaprofiler = hotshot.Profile("banana.prof")
+bananaprofiler.start()
 
 def bakefile(fileloc):
     """
@@ -242,3 +246,9 @@ app.stopSubWindow()
 
 app.setStretch("both")
 app.go()
+
+bananaprofiler.stop()
+bananaprofiler.close()
+stats = hotshot.stats.load("banana.prof")
+stats.sort_stats('time', "cumulative")
+stats.print_stats(50)

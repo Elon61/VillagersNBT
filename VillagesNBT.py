@@ -89,16 +89,28 @@ class Village(object):
 
         self._update_doormath(x, y, z)
 
-    def del_door(self, x, y, z):
-        """
+    def del_doorz(self, new_doors):
+        kapoow = self.doors_list()
+        kapooww = list(kapoow)
+        for door in kapooww:
+            x, y, z = door['X'].value, door['Y'].value, door['Z'].value
+            if (x, y, z) in new_doors:
+                kapoow.remove(door)
+                self._update_doormath(-x, -y, -z)
 
+    def doors_list(self):
+        return self.get_vil()['Doors']
+
+    def list_doors(self):
         """
-        door_taglist = self.get_vil()['Doors']
+        LO TAYIM
+        :return a set of tuples with the XYZ of all the doors in the village
+        """
+        doors_set = set()
         door_listcopy = list(self.get_vil()['Doors'])
         for door in door_listcopy:
-            if (door['X'].value, door['Y'].value, door['Z'].value) == (x, y, z):
-                door_taglist.remove(door)
-                self._update_doormath(-x, -y, -z)
+            doors_set.add((door['X'].value, door['Y'].value, door['Z'].value))
+        return doors_set
 
     def _update_doormath(self, x, y, z):
         doors_list = self._village['Doors']
@@ -113,6 +125,17 @@ class Village(object):
             self._village['CX'].value = self._village['ACX'].value / len(doors_list)
             self._village['CY'].value = self._village['ACY'].value / len(doors_list)
             self._village['CZ'].value = self._village['ACZ'].value / len(doors_list)
+
+    def del_door(self, x, y, z):
+        """
+
+        """
+        door_taglist = self.get_vil()['Doors']
+        door_listcopy = list(self.get_vil()['Doors'])
+        for door in door_listcopy:
+            if (door['X'].value, door['Y'].value, door['Z'].value) == (x, y, z):
+                door_taglist.remove(door)
+                self._update_doormath(-x, -y, -z)
 
     @property
     def is_empty(self):
@@ -172,6 +195,19 @@ def del_door(vil_list, x, y, z):
         if villl.is_empty:
             vil_list.remove(vil_TAGCompound)
 
+def all_coords_in_villages(cat):
+    """
+    LO TAYIM
+    :param cat:
+    :return:
+    """
+    doors_set = set()
+    cat2 = cat['data']['Villages']
+    vil17 = list(cat2)
+    for village17 in vil17:
+        vill = Village(village17)
+        doors_set.update(vill.list_doors())
+    return doors_set
 
 def village_gen(x1, villages, y, z1, halfDoorsInVillage, emptySpaces, axis, tick, cat):
     """
@@ -194,19 +230,24 @@ def village_gen(x1, villages, y, z1, halfDoorsInVillage, emptySpaces, axis, tick
 
     """
     cat2 = cat["data"]
+    doors_set = all_coords_in_villages(cat)
     doors_coords_lists = village_doors_coordinates(x1, villages, y, z1, halfDoorsInVillage, emptySpaces, axis)
     for coordinates_list in doors_coords_lists:
         vil = Village.create_village(tick)
         for x, y, z in coordinates_list:
-            del_door(cat2['Villages'], x, y, z)
+            if (x, y, z) in doors_set:
+                del_door(cat2['Villages'], x, y, z)
             vil.add_door(create_door(tick, x, y, z))
+            doors_set.add((x, y, z))
         cat2['Villages'].append(vil.get_vil())
 
 
 def main():
-    cat1, tick = existing_village_file("./villages.dat")
-    village_gen(-107, number_of_villages_to_generate, 132, 169, number_of_doors_to_generate / 2, 19, 'X', tick, cat1)
-    cat1.write_file("./villages.dat")
+    cat1, tick = existing_village_file("./villagesCopy.dat")
+    bananana = Village(cat1['data']['Villages'][0])
+    bananana.del_doorz(((1, 2, 3),))
+    #village_gen(-107, number_of_villages_to_generate, 132, 169, number_of_doors_to_generate / 2, 19, 'X', tick, cat1)
+    cat1.write_file("./villagesCopy.dat")
 
 if __name__ == '__main__':
     main()
