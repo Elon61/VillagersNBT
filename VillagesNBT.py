@@ -182,32 +182,18 @@ def create_door(tick, x, y, z):
     return door
 
 
-def del_door(vil_list, x, y, z):
+def del_door(vil_list, doors_set):
     """
-    Searches for a door with specified coordinates inside of specified village list,
-    if the current village is out of doors, removes it.
-    Can be used just to do some cleanup.
+    :param vil_list:
+    :param doors_set:
+    :return:
     """
     vil85 = list(vil_list)
     for vil_TAGCompound in vil85:
         villl = Village(vil_TAGCompound)
-        villl.del_door(x, y, z)
+        villl.del_doorz(doors_set)
         if villl.is_empty:
             vil_list.remove(vil_TAGCompound)
-
-def all_coords_in_villages(cat):
-    """
-    LO TAYIM
-    :param cat:
-    :return:
-    """
-    doors_set = set()
-    cat2 = cat['data']['Villages']
-    vil17 = list(cat2)
-    for village17 in vil17:
-        vill = Village(village17)
-        doors_set.update(vill.list_doors())
-    return doors_set
 
 def village_gen(x1, villages, y, z1, halfDoorsInVillage, emptySpaces, axis, tick, cat):
     """
@@ -230,24 +216,23 @@ def village_gen(x1, villages, y, z1, halfDoorsInVillage, emptySpaces, axis, tick
 
     """
     cat2 = cat["data"]
-    doors_set = all_coords_in_villages(cat)
+    doors_set = set()
     doors_coords_lists = village_doors_coordinates(x1, villages, y, z1, halfDoorsInVillage, emptySpaces, axis)
+    for vill_coords_list in doors_coords_lists:
+        for single_door_coord in vill_coords_list:
+            doors_set.add(tuple(single_door_coord))
+    del_door(cat2['Villages'], doors_set)
     for coordinates_list in doors_coords_lists:
         vil = Village.create_village(tick)
         for x, y, z in coordinates_list:
-            if (x, y, z) in doors_set:
-                del_door(cat2['Villages'], x, y, z)
             vil.add_door(create_door(tick, x, y, z))
-            doors_set.add((x, y, z))
         cat2['Villages'].append(vil.get_vil())
 
 
 def main():
-    cat1, tick = existing_village_file("./villagesCopy.dat")
-    bananana = Village(cat1['data']['Villages'][0])
-    bananana.del_doorz(((1, 2, 3),))
-    #village_gen(-107, number_of_villages_to_generate, 132, 169, number_of_doors_to_generate / 2, 19, 'X', tick, cat1)
-    cat1.write_file("./villagesCopy.dat")
+    cat1, tick = existing_village_file("./villagesCopy2.dat")
+    village_gen(-107, number_of_villages_to_generate, 132, 169, number_of_doors_to_generate / 2, 19, 'X', tick, cat1)
+    cat1.write_file("./villagesCopy2.dat")
 
 if __name__ == '__main__':
     main()
