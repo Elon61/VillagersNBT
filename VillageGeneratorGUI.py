@@ -6,13 +6,14 @@ import os
 import shutil
 import VillagesNBT
 import errno
-import glob
+import glob, time
 import hotshot, hotshot.stats
+import threading
 
 width = GetSystemMetrics(0)
 height = GetSystemMetrics(1)
 
-currFolder = "C:/Users/Elon/AppData/Roaming/.minecraft/other_versions/forge_1.9.4/saves/IronFarm1.8/data"
+currFolder = r"C:\Users\Elon\Desktop\Stuff"
 
 NUM_VILLAGES = "Number of Villages:\t\t\t\t"
 TOTAL_DOORS_PER_VILLAGE = "Total Doors in every village:\t\t\t"
@@ -107,14 +108,22 @@ def plotplotplotplotplot(coordlist):
     app.showSubWindow("simimg")
     return
 
-def start(stuff):
-    try:
-        bakefile(currFolder + r"\villages.dat")
-    except IOError, e:
-        if e.errno == errno.ENOENT:
-            pass
-        else:
-            app.setLabel("Info", "IOError " + str(e.errno) + ": " + str(e.strerror))
+def startthread(banana):
+    threading.Thread(target=start).start()
+
+def start():
+    if app.getRadioButton("backup") == "Yes":
+        app.setLabel("Info", "Baking old village file.")
+        time.sleep(.5)
+        try:
+            bakefile(currFolder + r"\villages.dat")
+            app.setLabel("Info", "Old villages file baked!")
+        except IOError, e:
+            if e.errno == errno.ENOENT:
+                pass
+            else:
+                app.setLabel("Info", "IOError " + str(e.errno) + ": " + str(e.strerror))
+
 
     num_of_villages_to_generate = int(app.getEntry(NUM_VILLAGES))
     total_doors_per_village = int(app.getEntry(TOTAL_DOORS_PER_VILLAGE))
@@ -132,14 +141,18 @@ def start(stuff):
 
     if os.path.exists(currFolder + "/villages.dat"):
         vilFile, tick = VillagesNBT.existing_village_file(currFolder + "/villages.dat")
+        app.setLabel("Info", "Village file found!")
+        time.sleep(1)
     else:
         tick = 0
         vilFile = VillagesNBT.template_village_file(tick)
         vilFile.write_file(currFolder + "/villages.dat")
+        app.setLabel("Info", "No file found: creating new file.")
+        time.sleep(1)
 
-    for y in y_list:
-        print y
-        VillagesNBT.village_gen(x, num_of_villages_to_generate, y, z,
+    app.setLabel("Info", "Creating Villages, might take a while, be patient!")
+    print y_list
+    VillagesNBT.village_gen(x, num_of_villages_to_generate, y_list, z,
                                 total_doors_per_village / 2, doorspace, axis, tick, vilFile)
 
     try:
@@ -157,17 +170,31 @@ def start(stuff):
 
 def add_y(stuff):
     y = app.getSpinBox(Y)
-    app.addListItem("Y list", y)
     currYval = int(app.getSpinBox(Y))
-    app.setSpinBox(Y, currYval + 4)
+    app.addListItem("Y list", y)
     app.setLabel("Info", "Y value \'" + str(currYval) + "\' added to list!")
+    if not currYval + 4 > 256:
+        app.setSpinBox(Y, currYval + 4)
+    try:
+        if app.getAllListItems("Y list")[-2] == '256':
+            app.setLabel("Info", "Maximum Y value reached.")
+            app.removeListItem("Y list", "256")
+    except Exception:
+        pass
 
 def rem_y(stuff):
     y = app.getSpinBox(Y)
-    app.removeListItem("Y list", y)
     currYval = int(app.getSpinBox(Y))
-    app.setSpinBox(Y, currYval - 4)
-    app.setLabel("Info", "Y value \'" + str(currYval) + "\' removed from list!")
+    if app.getAllListItems("Y list"):
+        if y in app.getAllListItems("Y list"):
+            app.setSpinBox(Y, currYval - 4)
+            #TODO: change the '4' value to a variable defined in the Gooey
+            app.removeListItem("Y list", y)
+            app.setLabel("Info", "Y value \'" + str(currYval) + "\' removed from list!")
+        else:
+            app.setLabel("Info", "Value not in list, can't remove it!")
+    else:
+        app.setLabel("Info", "List is empty! Can't remove nothing!")
 
 def dirsel(name):
     currentFolder = app.directoryBox("whatever", "C:/Users/Elon/AppData/Roaming/.minecraft/other_versions/forge_1.9.4/saves/IronFarm1.8/data")
@@ -211,7 +238,7 @@ app.addLabelNumericEntry(X_LOW, 3, 0)
 app.addLabelSpinBoxRange(Y, 1, 256, 3, 1)
 app.addLabelNumericEntry(Z_LOW, 3, 2)
 
-app.startLabelFrame("frame1", 4, 0, 3)
+app.startLabelFrame("Y Coordinates", 4, 0, 3)
 app.addButton("Add Y coord to the list", add_y)
 app.addListBox("Y list", [], 0, 1)
 app.addButton("Remove Y coord from the list", rem_y, 0, 2)
@@ -236,7 +263,13 @@ app.addRadioButton("axis", "X")
 app.addRadioButton("axis", "Z", 0, 1)
 app.stopLabelFrame()
 
-app.addButton("Start", start, 7, 0)
+app.startLabelFrame("Backup Village file?", 3, 7, 1000)
+app.addRadioButton("backup", "Yes")
+app.addRadioButton("backup", "No", 0, 1)
+app.setRadioButton("backup", "No")
+app.stopLabelFrame()
+
+app.addButton("Start", startthread, 7, 0)
 app.addButton("Simulate", plot, 5, 0)
 app.addButton("Exit", stop, 7, 7, 1000)
 
@@ -247,8 +280,8 @@ app.stopSubWindow()
 app.setStretch("both")
 app.go()
 
-bananaprofiler.stop()
-bananaprofiler.close()
-stats = hotshot.stats.load("banana.prof")
-stats.sort_stats('time', "cumulative")
-stats.print_stats(50)
+# bananaprofiler.stop()
+# bananaprofiler.close()
+# stats = hotshot.stats.load("banana.prof")
+# stats.sort_stats('time', "cumulative")
+# stats.print_stats(50)

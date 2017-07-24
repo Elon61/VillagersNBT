@@ -195,7 +195,7 @@ def del_door(vil_list, doors_set):
         if villl.is_empty:
             vil_list.remove(vil_TAGCompound)
 
-def village_gen(x1, villages, y, z1, halfDoorsInVillage, emptySpaces, axis, tick, cat):
+def village_gen(x1, villages, y_list, z1, halfDoorsInVillage, emptySpaces, axis, tick, cat):
     """
     generates villages with doors n stuff
 
@@ -216,8 +216,10 @@ def village_gen(x1, villages, y, z1, halfDoorsInVillage, emptySpaces, axis, tick
 
     """
     cat2 = cat["data"]
+    doors_coords_lists = []
     doors_set = set()
-    doors_coords_lists = village_doors_coordinates(x1, villages, y, z1, halfDoorsInVillage, emptySpaces, axis)
+    for y in y_list:
+        doors_coords_lists += village_doors_coordinates(x1, villages, y, z1, halfDoorsInVillage, emptySpaces, axis)
     for vill_coords_list in doors_coords_lists:
         for single_door_coord in vill_coords_list:
             doors_set.add(tuple(single_door_coord))
@@ -231,7 +233,7 @@ def village_gen(x1, villages, y, z1, halfDoorsInVillage, emptySpaces, axis, tick
 
 def main():
     cat1, tick = existing_village_file("./villagesCopy2.dat")
-    village_gen(-107, number_of_villages_to_generate, 132, 169, number_of_doors_to_generate / 2, 19, 'X', tick, cat1)
+    village_gen(-107, number_of_villages_to_generate, [132], 169, number_of_doors_to_generate / 2, 19, 'X', tick, cat1)
     cat1.write_file("./villagesCopy2.dat")
 
 if __name__ == '__main__':
