@@ -90,27 +90,13 @@ class Village(object):
         self._update_doormath(x, y, z)
 
     def del_doorz(self, new_doors):
-        kapoow = self.doors_list()
+        kapoow = self.get_vil()['Doors']
         kapooww = list(kapoow)
         for door in kapooww:
             x, y, z = door['X'].value, door['Y'].value, door['Z'].value
             if (x, y, z) in new_doors:
                 kapoow.remove(door)
                 self._update_doormath(-x, -y, -z)
-
-    def doors_list(self):
-        return self.get_vil()['Doors']
-
-    def list_doors(self):
-        """
-        LO TAYIM
-        :return a set of tuples with the XYZ of all the doors in the village
-        """
-        doors_set = set()
-        door_listcopy = list(self.get_vil()['Doors'])
-        for door in door_listcopy:
-            doors_set.add((door['X'].value, door['Y'].value, door['Z'].value))
-        return doors_set
 
     def _update_doormath(self, x, y, z):
         doors_list = self._village['Doors']
@@ -125,17 +111,6 @@ class Village(object):
             self._village['CX'].value = self._village['ACX'].value / len(doors_list)
             self._village['CY'].value = self._village['ACY'].value / len(doors_list)
             self._village['CZ'].value = self._village['ACZ'].value / len(doors_list)
-
-    def del_door(self, x, y, z):
-        """
-
-        """
-        door_taglist = self.get_vil()['Doors']
-        door_listcopy = list(self.get_vil()['Doors'])
-        for door in door_listcopy:
-            if (door['X'].value, door['Y'].value, door['Z'].value) == (x, y, z):
-                door_taglist.remove(door)
-                self._update_doormath(-x, -y, -z)
 
     @property
     def is_empty(self):
